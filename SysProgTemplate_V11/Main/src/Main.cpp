@@ -33,8 +33,8 @@ void ausgabe(char* token, int line, int column,  char* lexem, FILE* fp) {
 
 int main(int argc, char* argv[]) {
 
-	argv[1] = "/home/stud/lkt/fbi/mude1013/Documents/testdatei.txt";
-	argv[2] = "/home/stud/lkt/fbi/mude1013/Documents/testdateioutparser.txt";
+	argv[1] = "/home/jannis/HS/SysProg/Test.txt";
+	argv[2] = "/home/jannis/HS/SysProg/TestOut.txt";
 	argc = 2;
 
 	printf("%d %s \n", argc, argv[1]);

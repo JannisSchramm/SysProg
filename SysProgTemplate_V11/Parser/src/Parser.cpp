@@ -12,10 +12,10 @@
  * Erstellt einen neuen Parser.
  */
 Parser::Parser() {
-	fp = fopen("/home/stud/lkt/fbi/mude1013/Documents/testdateioutparsercode.txt","w"); // Datei neu erzeugen bzw. ueberschreiben, wenn es sie schon gibt
+	fp = fopen("/home/jannis/HS/SysProg/TestOut.txt","w"); // Datei neu erzeugen bzw. ueberschreiben, wenn es sie schon gibt
 
 
-	scanner = new Scanner("/home/stud/lkt/fbi/mude1013/Documents/testdatei.txt");    //TODO man soll bei Start des Programms die Input-Datei eingeben können
+	scanner = new Scanner("/home/jannis/HS/SysProg/Test.txt");    //TODO man soll bei Start des Programms die Input-Datei eingeben können
 	symTab = scanner->getSymboltable();
 	printf("hier gehts los \n");
 	parseTree = parse();
