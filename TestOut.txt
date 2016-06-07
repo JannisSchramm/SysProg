@@ -1,1 +1,1 @@
- DS $x1 LC 1 LA $x STR  NOP  STP 
+ DS $x1 LC 1 LA $x STR  LC 0 LA $x LV LES JIN #label0  LC 2 LA $x STR  NOP  JMP #label1 #label0  NOP  LC 7 LA $x STR  NOP #label1  NOP #label2  NOP  LC 5 LA $x LV LES JIN #label3  LA $x LV  LC 1SUB LA $x STR  NOP  JMP #label2 #label3  NOP  NOP  STP 

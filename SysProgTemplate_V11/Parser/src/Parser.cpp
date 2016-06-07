@@ -12,10 +12,11 @@
  * Erstellt einen neuen Parser.
  */
 Parser::Parser() {
-	fp = fopen("/home/jannis/HS/SysProg/TestOut.txt","w"); // Datei neu erzeugen bzw. ueberschreiben, wenn es sie schon gibt
+	//TODO in richtiger Textdatei speichern
+	fp = fopen("/home/rebecca/HS/SysProg/TestOut.txt","w"); // Datei neu erzeugen bzw. ueberschreiben, wenn es sie schon gibt
 
 
-	scanner = new Scanner("/home/jannis/HS/SysProg/Test.txt");    //TODO man soll bei Start des Programms die Input-Datei eingeben können
+	scanner = new Scanner("/home/rebecca/HS/SysProg/Test.txt");    //TODO man soll bei Start des Programms die Input-Datei eingeben können
 	symTab = scanner->getSymboltable();
 	printf("hier gehts los \n");
 	parseTree = parse();
@@ -23,7 +24,7 @@ Parser::Parser() {
 	typeCheckStart(parseTree);
 
 	printf("\n makeCode: \n \n");
-
+	labelCount = 0;
 	makeCodeStart(parseTree);
 
 	printf("Ende\n");
@@ -1051,6 +1052,7 @@ void Parser::makeCodeStatements(Node* nodeStatements) {
 void Parser::makeCodeStatement(Node* nodeStatement) {
 	printf("makeCodeStatement \n");
 
+
 	SuperTreeList* list = nodeStatement->getNodesAndLeaves();
 	int listSize = list->getSize();
 
@@ -1081,19 +1083,26 @@ void Parser::makeCodeStatement(Node* nodeStatement) {
 		}
 		else if(list->getSuperTree(0)->gt == LEAF && list->getSuperTree(1)->gt == LEAF && list->getSuperTree(2)->gt == EXP
 				&& list->getSuperTree(3)->gt == LEAF && list->getSuperTree(4)->gt == STATEMENT){
+
+			char currentLabel1pre[10];
+			char* currentLabel1 = getNextLabel(currentLabel1pre);
+			char currentLabel2pre[10];
+			char* currentLabel2 = getNextLabel(currentLabel2pre);
+
+
 			print("#");
-			print("label1");
+			print(currentLabel1);
 			print(" NOP ");
 			makeCodeExp((Node*)list->getSuperTree(2));
 			print(" JIN ");
 			print("#");
-			print("label2");
+			print(currentLabel2);
 			makeCodeStatement((Node*)list->getSuperTree(4));
 			print(" JMP ");
 			print("#");
-			print("label1");
+			print(currentLabel1);
 			print("#");
-			print("label2");
+			print(currentLabel2);
 			print(" NOP ");
 
 		}
@@ -1105,20 +1114,31 @@ void Parser::makeCodeStatement(Node* nodeStatement) {
 	}
 	else if(listSize == 7) {
 		if(list->getSuperTree(0)->gt == LEAF && list->getSuperTree(1)->gt == LEAF && list->getSuperTree(2)->gt == EXP && list->getSuperTree(3)->gt == LEAF && list->getSuperTree(4)->gt == STATEMENT && list->getSuperTree(5)->gt == LEAF && list->getSuperTree(6)->gt == STATEMENT) {
+
+			char currentLabel1pre[10];
+			char* currentLabel1 = getNextLabel(currentLabel1pre);
+			char currentLabel2pre[10];
+			char* currentLabel2 = getNextLabel(currentLabel2pre);
+
+			//TODO beide werden gleich gesetzt?!
+
+
+			printf(">>>>>>>>>>>>>>> Die beiden Label sind: %s, %s", currentLabel1, currentLabel2);
+
 			makeCodeExp((Node*)list->getSuperTree(2));
 			print(" JIN ");
 			print("#");
-			print("label1"); //TODO ist das so richtig? (kein Anführungszeichen in der PDF)
+			print(currentLabel1);
 			makeCodeStatement((Node*)list->getSuperTree(4));
 			print(" JMP ");
 			print("#");
-			print("label2");
+			print(currentLabel2);
 			print("#");
-			print("label1");
+			print(currentLabel1);
 			print(" NOP ");
 			makeCodeStatement((Node*)list->getSuperTree(6));
 			print("#");
-			print("label2");
+			print(currentLabel2);
 			print(" NOP ");
 		}
 	}
@@ -1313,15 +1333,22 @@ void Parser::error(char* errorString, int line, int column) {
 
 
 void Parser::print(char* text) {
-	//TODO in Textdatei speichern
 
 	fprintf(fp, text);
 	printf("                 Code: %s \n", text);
 }
 
 void Parser::print(int text) {
-	//TODO in Textdatei speichern
 
 	fprintf(fp, "%d", text);
 	printf("                 Code: %d \n", text);
+}
+
+
+char* Parser::getNextLabel(char label[10]) {
+	printf("Neues Label erstellen: %d \n", labelCount);
+	sprintf(label, "label%d ", labelCount);
+	labelCount++;
+	printf("######################################Neues Label wurde erstellt: %s \n", label);
+	return label;
 }

@@ -27,6 +27,11 @@ private:
 	FILE* fp;
 	Token* currentToken;
 	Symboltable* symTab;
+	Scanner* scanner;
+	Tree* parseTree;
+	int labelCount;
+
+	Tree* parse();
 	Tree* prog();
 	Node* decls();
 	Node* decl();
@@ -38,13 +43,6 @@ private:
 	Node* index();
 	Node* op_exp();
 	Node* op();
-
-	Tree* parse();
-
-	Scanner* scanner;
-
-	Tree* parseTree;
-	void error(char* errorString, int line, int column);
 
 	void typeCheckStart(Tree* parseTree);
 	void typeCheckDecls(Node* nodeDecls);
@@ -70,8 +68,10 @@ private:
 	void makeCodeOp_Exp(Node* nodeOp_Exp);
 	void makeCodeOp(Node* nodeOp);
 
+	void error(char* errorString, int line, int column);
 	void print(char* text);
 	void print(int text);
+	char* getNextLabel(char label[10]);
 };
 
 #endif /* PARSER_H_ */
