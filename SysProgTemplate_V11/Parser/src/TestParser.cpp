@@ -2,6 +2,15 @@
 
 int main (int argc, char* argv[]){
 
-	Parser* parser = new Parser();
+
+/*	argv[1] = "/home/rebecca/HS/SysProg/Test2.txt";
+	argv[2] = "/home/rebecca/HS/SysProg/TestOut.txt";
+	argc = 2; */
+
+	Parser* parser = new Parser(argv[1], argv[2]);
+
+
+	//sudo ./ParserTest /home/rebecca/HS/SysProg/Test.txt /home/rebecca/HS/SysProg/TestOut.txt
+
 
 }

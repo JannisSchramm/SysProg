@@ -19,7 +19,7 @@
 
 class Parser {
 public:
-	Parser();
+	Parser(char* input, char* output);
 	virtual ~Parser();
 	void typeCheck();
 	bool compare(char* a, char* b);

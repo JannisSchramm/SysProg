@@ -11,12 +11,12 @@
 /**
  * Erstellt einen neuen Parser.
  */
-Parser::Parser() {
+Parser::Parser(char* input, char* output) {
 	//TODO in richtiger Textdatei speichern
-	fp = fopen("/home/rebecca/HS/SysProg/TestOut.txt","w"); // Datei neu erzeugen bzw. ueberschreiben, wenn es sie schon gibt
+	fp = fopen(output,"w"); //"/home/rebecca/HS/SysProg/TestOut.txt" Datei neu erzeugen bzw. ueberschreiben, wenn es sie schon gibt
 
 
-	scanner = new Scanner("/home/rebecca/HS/SysProg/Test.txt");    //TODO man soll bei Start des Programms die Input-Datei eingeben können
+	scanner = new Scanner(input);    //TODO "/home/rebecca/HS/SysProg/Test.txt" man soll bei Start des Programms die Input-Datei eingeben können
 	symTab = scanner->getSymboltable();
 	printf("hier gehts los \n");
 	parseTree = parse();
