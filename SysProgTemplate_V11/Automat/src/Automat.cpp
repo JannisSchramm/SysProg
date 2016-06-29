@@ -93,12 +93,14 @@ Automat::Automat() {
 	transformationTable[67] = new Transformation(CommentFinishState, CommentState, NewLineTrans);
 	transformationTable[68] = new Transformation(StartState, SmallerState, SmallerTrans);
 	transformationTable[69] = new Transformation(StartState, BiggerState, BiggerTrans);
+	transformationTable[70] = new Transformation(CommentState, CommentState, FailTrans);
+	transformationTable[71] = new Transformation(CommentFinishState, CommentState, FailTrans);
 
 
 }
  
 Automat::~Automat() {
-	for (int i = 69; i >= 0; i--) {
+	for (int i = 71; i >= 0; i--) {
 		delete transformationTable[i];
 	}
 
@@ -208,6 +210,7 @@ void Automat::isSignal(char nextChar) {
 			break;
 		case('}') : currentEvent = ClosedCurlyTrans;
 			break;
+
 	}
 }
 
@@ -217,7 +220,7 @@ void Automat::isSignal(char nextChar) {
  */
 bool Automat::searchUseTransformation() {
 	bool richtig = false;
-	for(unsigned int i = 0; i < 70; i++) { //transformationTable size?
+	for(unsigned int i = 0; i < 72; i++) { //transformationTable size?
 		if(transformationTable[i]->getNeededState() == currentState
 				&& transformationTable[i]->getNeededSignal() == currentEvent) {
 			currentState = transformationTable[i]->getNextState();

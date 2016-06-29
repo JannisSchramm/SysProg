@@ -46,6 +46,13 @@ bool Information::compareLex(char* lexem) {
 		lexem++;
 		ownLexem++;
 	}
+	while (*ownLexem != '\0') {
+		if (*ownLexem != *lexem) {
+			return false;
+		}
+		lexem++;
+		ownLexem++;
+	}
 	if (*lexem == *ownLexem) {
 		return true;
 	} else {

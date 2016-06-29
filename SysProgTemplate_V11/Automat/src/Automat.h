@@ -26,7 +26,7 @@ private:
 	State lastAcceptedState;
 	State lastAcceptedStateBuffer;
 	State startState;
-	Transformation* transformationTable[70];
+	Transformation* transformationTable[72];
 	int line;
 	int column;
 	int startColumn;

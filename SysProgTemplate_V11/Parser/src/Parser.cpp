@@ -57,6 +57,8 @@ Tree* Parser::prog() {
 		|| (currentToken->getName() == IdentifierToken && compare(currentToken->getContent(), "read\0"))
 		|| (currentToken->getName() == IdentifierToken && compare(currentToken->getContent(), "if\0"))
 		|| (currentToken->getName() == IdentifierToken && compare(currentToken->getContent(),"while\0"))
+		|| (currentToken->getName() == IdentifierToken && compare(currentToken->getContent(), "IF\0"))
+		|| (currentToken->getName() == IdentifierToken && compare(currentToken->getContent(),"WHILE\0"))
 		|| currentToken->getName() == OpenCurlyToken || currentToken->getName() == EndToken){
 		Node* nodeDecls = decls();
 		Node* nodeStatements = statements();
@@ -195,6 +197,8 @@ Node* Parser::statements() { //TODO verschachtelte if funktionieren nicht
 			|| (currentToken->getName() == IdentifierToken && compare(currentToken->getContent(), "read\0"))
 			|| (currentToken->getName() == IdentifierToken && compare(currentToken->getContent(), "if\0"))
 			|| (currentToken->getName() == IdentifierToken && compare(currentToken->getContent(), "while\0"))
+						|| (currentToken->getName() == IdentifierToken && compare(currentToken->getContent(), "IF\0"))
+						|| (currentToken->getName() == IdentifierToken && compare(currentToken->getContent(), "WHILE\0"))
 			|| currentToken->getName() == OpenCurlyToken || currentToken->getName() == EndToken) {
 		Node* nodeStatement = statement();
 
@@ -217,7 +221,7 @@ Node* Parser::statements() { //TODO verschachtelte if funktionieren nicht
 Node* Parser::statement() {
 	printf("statement \n");
 	Node* nodeStatement = new Node(STATEMENT, currentToken->getLine(), currentToken->getColumn());
-	if (currentToken->getName() == IdentifierToken && compare(currentToken->getContent(), "write\0")) {
+	if (currentToken->getName() == IdentifierToken && (compare(currentToken->getContent(), "write\0"))) {
 		Leaf* leafWrite = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		nodeStatement->addLeaf((SuperTree*)leafWrite);
 		currentToken = scanner->getNextToken();
@@ -237,7 +241,7 @@ Node* Parser::statement() {
 		} else {
 			error("in statement(): no OpenBracketToken \0", currentToken->getLine(), currentToken->getColumn());
 		}
-	} else if (currentToken->getName() == IdentifierToken && compare(currentToken->getContent(), "read\0")) {
+	} else if (currentToken->getName() == IdentifierToken && (compare(currentToken->getContent(), "read\0"))) {
 		Leaf* leafRead = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		nodeStatement->addLeaf((SuperTree*)leafRead);
 		currentToken = scanner->getNextToken();
@@ -288,7 +292,7 @@ Node* Parser::statement() {
 		} else {
 			error("in statement(): no CloseCurlyToken or OpenCurlyToken \0", currentToken->getLine(), currentToken->getColumn());
 		}
-	} else if (currentToken->getName() == IdentifierToken && compare(currentToken->getContent(), "if\0")) {
+	} else if (currentToken->getName() == IdentifierToken && (compare(currentToken->getContent(), "if\0") || compare(currentToken->getContent(), "IF\0"))) {
 		Leaf* leafIf = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		nodeStatement->addLeaf((SuperTree*)leafIf);
 		currentToken = scanner->getNextToken();
@@ -304,7 +308,7 @@ Node* Parser::statement() {
 				currentToken = scanner->getNextToken();
 				Node* nodeStatement2 = statement();
 				nodeStatement->addNode(nodeStatement2);
-				if (currentToken->getName() == IdentifierToken && compare(currentToken->getContent(), "else\0")) {
+				if (currentToken->getName() == IdentifierToken && (compare(currentToken->getContent(), "else\0") || compare(currentToken->getContent(), "ELSE\0"))) {
 					Leaf* leafElse = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 					nodeStatement->addLeaf((SuperTree*)leafElse);
 					currentToken = scanner->getNextToken();
@@ -320,7 +324,7 @@ Node* Parser::statement() {
 		} else {
 			error("in statement(): no OpenBracketToken \0", currentToken->getLine(), currentToken->getColumn());
 		}
-	} else if (currentToken->getName() == IdentifierToken && compare(currentToken->getContent(), "while\0")) {
+	} else if (currentToken->getName() == IdentifierToken && (compare(currentToken->getContent(), "while\0")|| (compare(currentToken->getContent(), "WHILE\0")))) {
 		Leaf* leafWhile = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		nodeStatement->addLeaf((SuperTree*)leafWhile);
 		currentToken = scanner->getNextToken();
@@ -972,7 +976,7 @@ void Parser::makeCodeStart(Tree* parseTree) {
 		if(parseTree->gt == PROG && list->getSuperTree(0)->gt == DECLS && list->getSuperTree(1)->gt == STATEMENTS) {
 			makeCodeDecls((Node*)list->getSuperTree(0));
 			makeCodeStatements((Node*)list->getSuperTree(1));
-			print(" STP ");
+			print("STP");
 		}
 	}
 
@@ -1004,9 +1008,10 @@ void Parser::makeCodeDecl(Node* nodeDecl) {
 
 	if(listSize == 3) {
 		if(list->getSuperTree(0)->gt == LEAF && list->getSuperTree(1)->gt == ARRAY && list->getSuperTree(2)->gt == LEAF) {
-			print(" DS ");
+			print("DS ");
 			print("$");
 			print(((Leaf*)list->getSuperTree(2))->getInformation()->getName());
+			print(" ");
 			makeCodeArray((Node*)list->getSuperTree(1));
 		}
 	}
@@ -1023,10 +1028,12 @@ void Parser::makeCodeArray(Node* nodeArray) {
 	if(listSize == 3) {
 		if(list->getSuperTree(0)->gt == LEAF && list->getSuperTree(1)->gt == LEAF && list->getSuperTree(2)->gt == LEAF) {
 			print(((Leaf*)list->getSuperTree(1))->getValue());
+			print("\n");
 		}
 	}
 	else if(listSize == 0) {
 		print("1");
+		print("\n");
 	}
 }
 
@@ -1045,7 +1052,8 @@ void Parser::makeCodeStatements(Node* nodeStatements) {
 		}
 	}
 	else if(listSize == 0) {
-		print(" NOP ");
+		print("NOP ");
+		print("\n");
 	}
 }
 
@@ -1061,25 +1069,31 @@ void Parser::makeCodeStatement(Node* nodeStatement) {
 	if(listSize == 4) {
 		if(list->getSuperTree(0)->gt == LEAF && list->getSuperTree(1)->gt == INDEX && list->getSuperTree(2)->gt == LEAF && list->getSuperTree(3)->gt == EXP) {
 			makeCodeExp((Node*)list->getSuperTree(3));
-			print(" LA ");
+			print("LA ");
 			print("$");
 			print(((Leaf*)list->getSuperTree(0))->getInformation()->getName());
+			print("\n");
 			makeCodeIndex((Node*)list->getSuperTree(1));
-			print(" STR ");
+			print("STR ");
+			print("\n");
 		}
 		if(list->getSuperTree(0)->gt == LEAF && list->getSuperTree(1)->gt == LEAF && list->getSuperTree(2)->gt == EXP && list->getSuperTree(3)->gt == LEAF) {
 			makeCodeExp((Node*)list->getSuperTree(2));
-			print(" PRI ");
+			print("PRI ");
+			print("\n");
 		}
 	}
 	else if(listSize == 5) {
 		if(list->getSuperTree(0)->gt == LEAF && list->getSuperTree(1)->gt == LEAF && list->getSuperTree(2)->gt == LEAF && list->getSuperTree(3)->gt == INDEX && list->getSuperTree(4)->gt == LEAF) {
-			print(" REA ");
-			print(" LA ");
+			print("REA ");
+			print("\n");
+			print("LA ");
 			print("$");
 			print(((Leaf*)list->getSuperTree(2))->getInformation()->getName());
+			print("\n");
 			makeCodeIndex((Node*)list->getSuperTree(3));
-			print(" STR ");
+			print("STR ");
+			print("\n");
 		}
 		else if(list->getSuperTree(0)->gt == LEAF && list->getSuperTree(1)->gt == LEAF && list->getSuperTree(2)->gt == EXP
 				&& list->getSuperTree(3)->gt == LEAF && list->getSuperTree(4)->gt == STATEMENT){
@@ -1092,18 +1106,24 @@ void Parser::makeCodeStatement(Node* nodeStatement) {
 
 			print("#");
 			print(currentLabel1);
-			print(" NOP ");
+			print("\n");
+			print("NOP ");
+			print("\n");
 			makeCodeExp((Node*)list->getSuperTree(2));
-			print(" JIN ");
+			print("JIN ");
 			print("#");
 			print(currentLabel2);
+			print("\n");
 			makeCodeStatement((Node*)list->getSuperTree(4));
-			print(" JMP ");
+			print("JMP ");
 			print("#");
 			print(currentLabel1);
+			print("\n");
 			print("#");
 			print(currentLabel2);
-			print(" NOP ");
+			print("\n");
+			print("NOP ");
+			print("\n");
 
 		}
 	}
@@ -1120,26 +1140,31 @@ void Parser::makeCodeStatement(Node* nodeStatement) {
 			char currentLabel2pre[10];
 			char* currentLabel2 = getNextLabel(currentLabel2pre);
 
-			//TODO beide werden gleich gesetzt?!
 
 
 			printf(">>>>>>>>>>>>>>> Die beiden Label sind: %s, %s", currentLabel1, currentLabel2);
 
 			makeCodeExp((Node*)list->getSuperTree(2));
-			print(" JIN ");
+			print("JIN ");
 			print("#");
 			print(currentLabel1);
+			print("\n");
 			makeCodeStatement((Node*)list->getSuperTree(4));
-			print(" JMP ");
+			print("JMP ");
 			print("#");
 			print(currentLabel2);
+			print("\n");
 			print("#");
 			print(currentLabel1);
-			print(" NOP ");
+			print("\n");
+			print("NOP ");
+			print("\n");
 			makeCodeStatement((Node*)list->getSuperTree(6));
 			print("#");
 			print(currentLabel2);
-			print(" NOP ");
+			print("\n");
+			print("NOP ");
+			print("\n");
 		}
 	}
 
@@ -1155,7 +1180,9 @@ void Parser::makeCodeIndex(Node* nodeIndex) {
 
 	if(listSize == 3) {
 		if(list->getSuperTree(0)->gt == LEAF && list->getSuperTree(1)->gt == EXP && list->getSuperTree(2)->gt == LEAF){
-			print(" ADD ");
+			makeCodeExp((Node*)list->getSuperTree(1));
+			print("ADD ");
+			print("\n");
 
 		}
 
@@ -1179,12 +1206,14 @@ void Parser::makeCodeExp(Node* nodeExp) {
 				else if(((Node*)list->getSuperTree(1))->getNodesAndLeaves()->getSuperTree(0)->getType() == opGreaterType) {
 					makeCodeOp_Exp((Node*)list->getSuperTree(1));
 					makeCodeExp2((Node*)list->getSuperTree(0));
-					print("LES");
+					print("LES ");
+					print("\n");
 				}
 				else if(((Node*)list->getSuperTree(1))->getNodesAndLeaves()->getSuperTree(0)->getType() == opUnEqualType) {
 					makeCodeExp2((Node*)list->getSuperTree(0));
 					makeCodeOp_Exp((Node*)list->getSuperTree(1));
-					print("NOT");
+					print("NOT ");
+					print("\n");
 				}
 				else {
 					makeCodeExp2((Node*)list->getSuperTree(0));
@@ -1209,30 +1238,36 @@ void Parser::makeCodeExp2(Node* nodeExp2) {
 	}
 	else if(listSize == 2) {
 		if(list->getSuperTree(0)->gt == LEAF && list->getSuperTree(1)->gt == INDEX){
-			print(" LA ");
+			print("LA ");
 			print("$");
 			print(((Leaf*)list->getSuperTree(0))->getInformation()->getName());
+			print("\n");
 			makeCodeIndex((Node*)list->getSuperTree(1));
-			print(" LV ");
+			print("LV ");
+			print("\n");
 		}
 		else if(list->getSuperTree(0)->gt == LEAF && list->getSuperTree(1)->gt == EXP2){
 			if (compare(((Leaf*)list->getSuperTree(0))->getInformation()->getName(),"-")) {
-				print(" LC ");
+				print("LC ");
 				print("0");
+				print("\n");
 				makeCodeExp2((Node*)list->getSuperTree(1));
-				print(" SUB ");
+				print("SUB ");
+				print("\n");
 			}
 			else {
 				makeCodeExp2((Node*)list->getSuperTree(1));
-				print(" NOT ");
+				print("NOT ");
+				print("\n");
 			}
 
 		}
 	}
 	else if(listSize == 1) {
 		if(list->getSuperTree(0)->gt == LEAF){
-			print(" LC ");
+			print("LC ");
 			print(((Leaf*)list->getSuperTree(0))->getValue());
+			print("\n");
 		}
 	}
 }
@@ -1265,30 +1300,38 @@ void Parser::makeCodeOp(Node* nodeOp) {
 		if(list->getSuperTree(0)->gt == LEAF) {
 			if(compare(((Leaf*)list->getSuperTree(0))->getInformation()->getName(),"+")){
 				print("ADD");
+				print("\n");
 			}
 			else if(compare(((Leaf*)list->getSuperTree(0))->getInformation()->getName(),"-")){
 				print("SUB");
+				print("\n");
 			}
 			else if(compare(((Leaf*)list->getSuperTree(0))->getInformation()->getName(),"*")){
 				print("MUL");
+				print("\n");
 			}
 			else if(compare(((Leaf*)list->getSuperTree(0))->getInformation()->getName(),"/")){
 				print("DIV");
+				print("\n");
 			}
 			else if(compare(((Leaf*)list->getSuperTree(0))->getInformation()->getName(),"<")){
 				print("LES");
+				print("\n");
 			}
 			else if(compare(((Leaf*)list->getSuperTree(0))->getInformation()->getName(),">")){
 
 			}
 			else if(compare(((Leaf*)list->getSuperTree(0))->getInformation()->getName(),"=")){
 				print("EQU");
+				print("\n");
 			}
 			else if(compare(((Leaf*)list->getSuperTree(0))->getInformation()->getName(),"<:>")){
 				print("EQU");
+				print("\n");
 			}
 			else if(compare(((Leaf*)list->getSuperTree(0))->getInformation()->getName(),"&")){
 				print("AND");
+				print("\n");
 			}
 
 		}
@@ -1314,6 +1357,19 @@ void Parser::makeCodeOp(Node* nodeOp) {
 			}
 			i++;
 		}
+
+		i = 0;
+			while(b[i]){
+				if (a[i]==b[i])
+				{
+					equal = true;
+				}
+				else
+				{
+					return false;
+				}
+				i++;
+			}
 
 		return equal;
 	}
