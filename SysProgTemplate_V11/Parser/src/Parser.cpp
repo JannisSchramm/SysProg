@@ -866,9 +866,16 @@ void Parser::typeCheckExp2(Node* nodeExp2){
 	}
 
 	if(listSize == 2){
+		printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< list 2 \n");
 		if(list->getSuperTree(0)->gt == LEAF && list->getSuperTree(1)->gt == EXP2){
+			printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< leaf exp2 \n");
+			//TODO ! richtig speichern
+			char* test = ((Leaf*)list->getSuperTree(0))->getInformation()->getName();
 			typeCheckExp2((Node*)list->getSuperTree(1));
-			if(compare(((Leaf*)list->getSuperTree(1))->getInformation()->getName(),"-")){
+			if(compare(((Leaf*)list->getSuperTree(0))->getInformation()->getName(),"-")){
+				nodeExp2->store(list->getSuperTree(1)->getType());
+			}
+			else if(compare(((Leaf*)list->getSuperTree(0))->getInformation()->getName(),"!")) {
 				nodeExp2->store(list->getSuperTree(1)->getType());
 			}
 			else{
@@ -1232,7 +1239,10 @@ void Parser::makeCodeExp2(Node* nodeExp2) {
 	printf("listSize Exp2: %d \n", listSize);
 
 	if(listSize == 3) {
-		if(list->getSuperTree(0)->gt == LEAF && list->getSuperTree(1)->gt == EXP && list->getSuperTree(1)->gt == LEAF){
+		printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<fseiölkjhgjbnmklö \n");
+		if(list->getSuperTree(0)->gt == LEAF && list->getSuperTree(1)->gt == EXP && list->getSuperTree(2)->gt == LEAF){
+			printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<fseiölkjhgjbnmklö \n");
+			//TODO hier hin kommen
 			makeCodeExp((Node*)list->getSuperTree(1));
 		}
 	}
@@ -1259,6 +1269,7 @@ void Parser::makeCodeExp2(Node* nodeExp2) {
 				makeCodeExp2((Node*)list->getSuperTree(1));
 				print("NOT ");
 				print("\n");
+				printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< !!!!!!!!!!!!!!!!!!! \n");
 			}
 
 		}
