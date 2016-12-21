@@ -41,10 +41,10 @@ Symboltable::~Symboltable() {
 /**
  * Fügt ein neues Lexem mit angegebenem Typ ein und gibt den Key zurück.
  */
-long long Symboltable::insert(char* lexem, char* type){
+int* Symboltable::insert(char* lexem, char* type){
 	int index = 0;
 	int offset = 0;
-	int key[2] = {0,0};
+	static int key[2];
 
 	for(int i = 0; lexem[i] != '\0'; i++) {
 		index += lexem[i];
@@ -54,30 +54,37 @@ long long Symboltable::insert(char* lexem, char* type){
 	offset = symtabEntry[index].addElement(lexem, type);
 	key[1] = offset;
 
-	return (long long)*key;
+	//printf("<<<<<<<<<<<<<<<< in symboltabelle insert pointer: %d %d\n", key[0], key[1]);
+	//printf("<<<<<<<<<< in symboltabelle insert lexem: %s \n", lexem);
+
+	return key;
 }
 
 /**
  * Fügt ein neues Lexem mit Typ Bezeichner ein und gibt den Key zurück.
  */
-long long Symboltable::insert(char* lexem){
-	return (long long) insert(lexem, "Identifier");
+int* Symboltable::insert(char* lexem){
+
+	return insert(lexem, "Identifier");
 }
 
 /**
  * Gibt die Information zu einem bestimmten Key zurück.
  */
-Information* Symboltable::lookup(long long key) {
+Information* Symboltable::lookup(int* key) {
+	//printf("<<<<<<<<<<<<<<<< in symboltabelle lookup pointer longlong: %lld \n",key);
+	//int keyArray = ((int)key);
+	//int* keyPointer = &keyArray;
 
-	int keyArray = ((int)key);
-	int* keyPointer = &keyArray;
-	printf("%d\n", keyPointer[0]);
-	Element* e = symtabEntry[keyPointer[0]].getElement(keyPointer[1]);
+	int* keyPointer;
+	keyPointer = key;
+
+	printf("<<<<<<<<<<<<<<<< in symboltabelle lookup pointer: %d %d\n", *keyPointer, *(keyPointer+1));
+	Element* e = symtabEntry[*keyPointer].getElement(*(keyPointer+1));
 
 	if(e != NULL){
 		Information* info = e->getInformation();
-		printf(info->getName());
-		printf("\n");
+		//printf("<<<<<<<<<<<<< in symboltabelle lookup name: %s \n", info->getName());
 		return info;
 	}
 	else

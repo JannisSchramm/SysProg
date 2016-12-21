@@ -3,9 +3,9 @@
 int main (int argc, char* argv[]){
 
 
-	/*argv[1] = "/home/rebecca/Dokumente/Studium/SysProg/SysProg/Test.txt";
+	argv[1] = "/home/rebecca/Dokumente/Studium/SysProg/SysProg/Test.txt";
 	argv[2] = "/home/rebecca/Dokumente/Studium/SysProg/SysProg/TestOut.txt";
-	argc = 2;*/
+	argc = 2;
 
 	Parser* parser = new Parser(argv[1], argv[2]);
 

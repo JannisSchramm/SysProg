@@ -17,7 +17,6 @@ Token::Token(Tokentyp name, char* myContent, int myline, int mycolumn) {
 	contentInt = 0;
 	line = myline;
 	column = mycolumn;
-	key = NULL;
 	// Die folgenden Verzweigungen prüfen, ob der Integer-Bereich überschritten wird und wenn ja, wird aus dem
 	// IntegerToken ien FailToken
 	if(name == IntegerToken){
@@ -54,11 +53,11 @@ int Token::getColumn(){
 	return column;
 }
 
-long long Token::getKey() {
+int* Token::getKey() {
 	return key;
 }
 
-void Token::setKey(long long myKey) {
+void Token::setKey(int* myKey) {
 	key = myKey;
 }
 

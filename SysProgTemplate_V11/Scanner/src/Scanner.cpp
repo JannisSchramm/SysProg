@@ -126,9 +126,10 @@ Tokentyp Scanner::calculateTokentyp() {
 // ### Name geändert createToken -> createToken
 Token* Scanner::createToken(Tokentyp state, int line, int column) {
 	Token* token;
-	long long key = NULL;
+	int* key;
 	if (state == IdentifierToken) {
 		key = symboltable->insert(temporaryChars);
+		printf("<<<<<<<<<<<<<<<<<<<< identifier ist: %s \n", temporaryChars);
 	}
 	else if (state == PlusToken) {
 		key = symboltable->insert("+\0", "+\0");
@@ -159,6 +160,9 @@ Token* Scanner::createToken(Tokentyp state, int line, int column) {
 	}
 	else if (state == AndToken) {
 		key = symboltable->insert("&\0", "&\0");
+	}
+	else {
+		key = 0;
 	}
 	/** 19.3.15
 	if (state == IntegerToken){

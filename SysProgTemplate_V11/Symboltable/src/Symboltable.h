@@ -16,9 +16,9 @@ class Symboltable {
 public:
 	Symboltable();
 	virtual ~Symboltable();
-	long long insert(char* lexem);
-	Information* lookup(long long key);
-	long long insert(char* lexem, char* typ);
+	int* insert(char* lexem);
+	Information* lookup(int* key);
+	int* insert(char* lexem, char* typ);
 private:
 	int length;
 	Vector* symtabEntry;

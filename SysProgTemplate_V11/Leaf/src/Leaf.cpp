@@ -12,7 +12,7 @@
 /**
  * Erstellt einen neuen Leaf.
  */
-Leaf::Leaf(long long symtabEntryKey, Symboltable* symboltable, grammarType grammartype, int line, int column): SuperTree(grammartype, line, column)  {
+Leaf::Leaf(int* symtabEntryKey, Symboltable* symboltable, grammarType grammartype, int line, int column): SuperTree(grammartype, line, column)  {
 
 	gt = grammartype;
 	symboltab = symboltable;
