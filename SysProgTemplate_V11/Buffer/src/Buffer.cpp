@@ -20,6 +20,7 @@ Buffer::Buffer(int size, char* input ) {
 	previousChar = new char[arrayLength];
 	inputTxt = input;
 	loadNewChars();
+	lastRound = false;
 }
 
 Buffer::~Buffer() {
@@ -35,6 +36,7 @@ void Buffer::loadNewChars() {
 
 	int k = 0;
 	int temp = 0;
+
 
 
 
@@ -115,7 +117,11 @@ char Buffer::getNextChar() {
 	if(currentChar[position]!= NULL){
 		return currentChar[position];
 	} else {
-		return NULL;
+		if (lastRound) {
+			return NULL;
+		}
+		lastRound = true;
+		return ' ';
 	}
 }
 

@@ -77,6 +77,7 @@ Tokentyp Scanner::calculateTokentyp() {
 		nextChar = buffer->getNextChar();
 		numberCharacters++;
 		if(nextChar == NULL){
+			printf("<<<<<<<<<<<<<<<<<<< Ende \n");
 			return EndToken;
 		}
 		temporaryChars[position] = nextChar;
@@ -134,6 +135,9 @@ Token* Scanner::createToken(Tokentyp state, int line, int column) {
 	}
 	else if (state == MinusToken) {
 		key = symboltable->insert("-\0", "-\0");
+	}
+	else if (state == ExclamationToken) {
+		key = symboltable->insert("!\0", "!\0");
 	}
 	else if (state == MultiplyToken) {
 		key = symboltable->insert("*\0", "*\0");

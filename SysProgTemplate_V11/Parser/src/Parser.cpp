@@ -197,9 +197,9 @@ Node* Parser::statements() { //TODO verschachtelte if funktionieren nicht
 			|| (currentToken->getName() == IdentifierToken && compare(currentToken->getContent(), "read\0"))
 			|| (currentToken->getName() == IdentifierToken && compare(currentToken->getContent(), "if\0"))
 			|| (currentToken->getName() == IdentifierToken && compare(currentToken->getContent(), "while\0"))
-						|| (currentToken->getName() == IdentifierToken && compare(currentToken->getContent(), "IF\0"))
-						|| (currentToken->getName() == IdentifierToken && compare(currentToken->getContent(), "WHILE\0"))
-			|| currentToken->getName() == OpenCurlyToken || currentToken->getName() == EndToken) {
+			|| (currentToken->getName() == IdentifierToken && compare(currentToken->getContent(), "IF\0"))
+			|| (currentToken->getName() == IdentifierToken && compare(currentToken->getContent(), "WHILE\0"))
+			|| currentToken->getName() == OpenCurlyToken) {
 		Node* nodeStatement = statement();
 
 		nodeStatements->addNode((SuperTree*)nodeStatement);
@@ -424,6 +424,7 @@ Node* Parser::exp2() {
 		Node* nodeExp2 = exp2();
 		node->addNode((SuperTree*)nodeExp2);
 	} else if (currentToken->getName() == ExclamationToken) {
+		printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< exp2!!!!!!!!!!!!!!!!!! \n");
 		Leaf* leafExclamation = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		node->addLeaf((SuperTree*)leafExclamation);
 		currentToken = scanner->getNextToken();
@@ -470,12 +471,13 @@ Node* Parser::index() {
 Node* Parser::op_exp(){
 	printf("op_exp \n");
 	Node* node = new Node(OP_EXP, currentToken->getLine(), currentToken->getColumn());
-	if (currentToken->getName() == CloseBracketToken || currentToken->getName() == CloseSquareToken || currentToken->getName() == SemicolonToken) {
+	if (currentToken->getName() == CloseBracketToken || currentToken->getName() == CloseSquareToken || currentToken->getName() == SemicolonToken
+			) {
 
 	} else if (currentToken->getName() == PlusToken || currentToken->getName() == MinusToken || currentToken->getName() == MultiplyToken
 			|| currentToken->getName() == DivideToken || currentToken->getName() == SmallToken || currentToken->getName() == BigToken
-			|| currentToken->getName() == EqualsToken || currentToken->getName() == SmallerDoubleBiggerToken || currentToken->getName() == EndToken
-			|| currentToken->getName() == AndToken) {
+			|| currentToken->getName() == EqualsToken || currentToken->getName() == SmallerDoubleBiggerToken
+			|| currentToken->getName() == AndToken || currentToken->getName() == EndToken) {
 
 		Node* nodeOp = op();
 		node->addNode((SuperTree*)nodeOp);
@@ -860,7 +862,9 @@ void Parser::typeCheckExp2(Node* nodeExp2){
 	}
 
 	if(listSize == 1){
+		printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< listSize == 1 \n");
 		if(list->getSuperTree(0)->gt == LEAF){
+			printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< inttype \n");
 			nodeExp2->store(intType);
 		}
 	}
@@ -871,18 +875,21 @@ void Parser::typeCheckExp2(Node* nodeExp2){
 			printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< leaf exp2 \n");
 			//TODO ! richtig speichern
 			char* test = ((Leaf*)list->getSuperTree(0))->getInformation()->getName();
+			printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< vor typeckeckexp2 mit int \n");
 			typeCheckExp2((Node*)list->getSuperTree(1));
+			printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< nach typecheckexp2 von supertree(1) \n");
 			if(compare(((Leaf*)list->getSuperTree(0))->getInformation()->getName(),"-")){
 				nodeExp2->store(list->getSuperTree(1)->getType());
 			}
 			else if(compare(((Leaf*)list->getSuperTree(0))->getInformation()->getName(),"!")) {
-				nodeExp2->store(list->getSuperTree(1)->getType());
-			}
-			else{
-				if(list->getSuperTree(1)->getType() == intType){
+				//nodeExp2->store(list->getSuperTree(1)->getType());
+				printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ! erkannt \n");
+				if(list->getSuperTree(1)->getType() != intType){ //TODO !?
+					printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ist kein intType \n");
 					nodeExp2->store(errorType);
 				}
 				else{
+					printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ist inttype \n");
 					nodeExp2->store(intType);
 				}
 			}

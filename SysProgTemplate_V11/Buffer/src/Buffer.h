@@ -25,6 +25,7 @@ private:
 	int position;         // aktuelle Stelle im Buffer
 	int arrayLength;
 	char* inputTxt;
+	bool lastRound;
 
 
 	void loadOldChars();
