@@ -25,7 +25,7 @@ int Vector::addElement(char* lexem, char* typ){
 		size = 1;
 	} else {
 		Element* e = firstElement;
-		index = 1;
+		index = 0;
 		while(e->hasNextElement()) {
 			if(e->getInformation()->compareLex(lexem)) {
 				e->getInformation()->setType(typ);
@@ -39,9 +39,11 @@ int Vector::addElement(char* lexem, char* typ){
 			return index;
 		} else {
 			e->setNextElement(new Element(lexem, typ));
+			size++;
+			index++;
 		}
 	}
-	return ++index;
+	return index;
 }
 
 Element* Vector::getFirstElement(){

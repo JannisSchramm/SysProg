@@ -15,7 +15,7 @@
 
 class Leaf :public SuperTree{
 public:
-	Leaf(int* symtabEntryKey, Symboltable*  symboltable, grammarType grammartype, int line, int column);
+	Leaf(int symtabEntryKeyIndex, int symtabEntryKeyOffset, Symboltable*  symboltable, grammarType grammartype, int line, int column);
 	virtual ~Leaf();
 	Information* getInformation();
 	void store(Type t);
@@ -26,7 +26,8 @@ public:
 private:
 	Information* information;
 	Symboltable* symboltab;
-	int* symtabEntryK;
+	int symtabEntryKIndex;
+	int symtabEntryKOffset;
 	char* value;
 
 };

@@ -12,31 +12,47 @@
 /**
  * Erstellt einen neuen Leaf.
  */
-Leaf::Leaf(int* symtabEntryKey, Symboltable* symboltable, grammarType grammartype, int line, int column): SuperTree(grammartype, line, column)  {
+Leaf::Leaf(int symtabEntryKeyIndex, int symtabEntryKeyOffset, Symboltable* symboltable, grammarType grammartype, int line, int column): SuperTree(grammartype, line, column)  {
 
 	gt = grammartype;
 	symboltab = symboltable;
-	symtabEntryK = symtabEntryKey;
+	symtabEntryKIndex = symtabEntryKeyIndex;
+	symtabEntryKOffset = symtabEntryKeyOffset;
 
-	if(symtabEntryKey > 0){
-		information =	symboltable->lookup(symtabEntryKey);
+	if (symtabEntryKIndex > 0) {
+		printf("<<<<<<<<<<<<<< in Leaf symtabEntryKIndex: %d \n", symtabEntryKIndex);
+	} else {
+		printf("<<<<<<<<<<<<<< in Leaf symtabEntryKIndex ist null\n");
+	}
+
+
+/*	try {
+		printf("<<<<<<<<<<<<<< in Leaf %d \n", *symtabEntryK);
+	} catch (const Exception e) {
+		printf("<<<<<<<<<<<<<< in Leaf %d \n", );
+	} */
+
+
+	if(symtabEntryKeyIndex > 0){
+		information =	symboltable->lookup(symtabEntryKIndex, symtabEntryKOffset);
 	}
 
 	value = "0";
+	type = noType;
 
 }
 
 void Leaf::store(Type t){
 	type = t;
-	if(symtabEntryK > 0){
-		information = symboltab->lookup(symtabEntryK);
+	if(symtabEntryKIndex > 0){
+		information = symboltab->lookup(symtabEntryKIndex, symtabEntryKOffset);
 		if (t == intType) {
 			symboltab->insert(information->getName(), "intType\0");
 		}
 		else if (t == intArrayType) {
 			symboltab->insert(information->getName(), "intArrayType\0");
 		}
-		information = symboltab->lookup(symtabEntryK);
+		information = symboltab->lookup(symtabEntryKIndex, symtabEntryKOffset);
 	}
 
 }
@@ -52,8 +68,9 @@ Information* Leaf::getInformation() {
 }
 
 Type Leaf::getType() {
-	if(symtabEntryK > 0){
-		information = symboltab->lookup(symtabEntryK);
+	type = noType; //TODO?
+	if(symtabEntryKIndex > 0){
+		information = symboltab->lookup(symtabEntryKIndex, symtabEntryKOffset);
 		char* gtChar = information->getType();
 		if (gtChar == "intType\0") {
 			type = intType;
@@ -62,6 +79,14 @@ Type Leaf::getType() {
 			type = intArrayType;
 		}
 	}
+
+	if (symtabEntryKIndex > 0) {
+		printf("<<<<<<<<<<<<<< in Leaf getType symtabEntryKIndex: %d \n", symtabEntryKIndex);
+	} else {
+		printf("<<<<<<<<<<<<<< in Leaf getType symtabEntryKIndex ist null\n");
+	}
+
+
 	return type;
 }
 

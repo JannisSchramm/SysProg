@@ -28,6 +28,8 @@ Token::Token(Tokentyp name, char* myContent, int myline, int mycolumn) {
 		iD = FailToken;
 		printf("%d", getContentInt());
 	}
+	keyIndex = 0;
+	keyOffset = 0;
 }
 
 Token::~Token() {
@@ -53,12 +55,17 @@ int Token::getColumn(){
 	return column;
 }
 
-int* Token::getKey() {
-	return key;
+int Token::getKeyIndex() {
+	return keyIndex;
 }
 
-void Token::setKey(int* myKey) {
-	key = myKey;
+int Token::getKeyOffset() {
+	return keyOffset;
+}
+
+void Token::setKey(int myKeyIndex, int myKeyOffset) {
+	keyIndex = myKeyIndex;
+	keyOffset = myKeyOffset;
 }
 
 

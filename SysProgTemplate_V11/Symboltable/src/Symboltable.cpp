@@ -44,7 +44,7 @@ Symboltable::~Symboltable() {
 int* Symboltable::insert(char* lexem, char* type){
 	int index = 0;
 	int offset = 0;
-	static int key[2];
+	static int key[2] = {0, 0};
 
 	for(int i = 0; lexem[i] != '\0'; i++) {
 		index += lexem[i];
@@ -54,8 +54,16 @@ int* Symboltable::insert(char* lexem, char* type){
 	offset = symtabEntry[index].addElement(lexem, type);
 	key[1] = offset;
 
-	//printf("<<<<<<<<<<<<<<<< in symboltabelle insert pointer: %d %d\n", key[0], key[1]);
-	//printf("<<<<<<<<<< in symboltabelle insert lexem: %s \n", lexem);
+/*	printf("<<<<<<<<<<<<<<<< in symboltabelle insert pointer: %d %d lexem: %s", key[0], key[1], lexem);
+
+	Element* e = symtabEntry[index].getElement(offset);
+	if (e == NULL) {
+		printf(" ist null");
+	} else {
+		printf(" ist nicht null");
+	}
+
+	printf("\n"); */
 
 	return key;
 }
@@ -71,25 +79,25 @@ int* Symboltable::insert(char* lexem){
 /**
  * Gibt die Information zu einem bestimmten Key zurück.
  */
-Information* Symboltable::lookup(int* key) {
+Information* Symboltable::lookup(int symboltabelleIndex, int symboltabelleOffset) {
 	//printf("<<<<<<<<<<<<<<<< in symboltabelle lookup pointer longlong: %lld \n",key);
 	//int keyArray = ((int)key);
 	//int* keyPointer = &keyArray;
 
-	int* keyPointer;
-	keyPointer = key;
+	int index = symboltabelleIndex;
+	int offset = symboltabelleOffset;
 
-	printf("<<<<<<<<<<<<<<<< in symboltabelle lookup pointer: %d %d\n", *keyPointer, *(keyPointer+1));
-	Element* e = symtabEntry[*keyPointer].getElement(*(keyPointer+1));
+	printf("<<<<<<<<<<<<<<<< in symboltabelle lookup pointer: %d %d\n", index, offset);
+	Element* e = symtabEntry[index].getElement(offset);
 
 	if(e != NULL){
 		Information* info = e->getInformation();
-		//printf("<<<<<<<<<<<<< in symboltabelle lookup name: %s \n", info->getName());
+		printf("<<<<<<<<<<<<<<<< in symboltabelle lookup name: %s \n", info->getName());
 		return info;
 	}
 	else
 	{
-		printf("e ist null\n");
+		//printf("<<<<<<<<<<<<<<<< in symboltabelle lookup element ist null\n");
 	}
 
 	return new Information("ich bin ein Fehler", "Fehler");

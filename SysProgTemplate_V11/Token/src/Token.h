@@ -21,15 +21,17 @@ public:
 	int getContentInt();
 	int getLine();
 	int getColumn();
-	int* getKey();
-	void setKey(int* myKey);
+	int getKeyIndex();
+	int getKeyOffset();
+	void setKey(int myKeyIndex, int myKeyOffset);
 private:
 	Tokentyp iD;
 	char* content;
 	int contentInt;
 	int line;
 	int column;
-	int* key;
+	int keyIndex;
+	int keyOffset;
 };
 
 #endif /* TOKEN_H_ */

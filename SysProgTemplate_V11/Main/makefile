@@ -7,8 +7,8 @@
 # -g --> debug Informationen erzeugen
 # -o --> name des output-files
 
-#makeTestMain: MainTarget testMainTarget  
-#	g++ -g debug/Main.o -o debug/MainTest
+makeTestMain: MainTarget testMainTarget  
+	g++ -g debug/Main.o -o debug/MainTest
 	
 
 # compilieren des Files Main.cpp zu Main.o, 

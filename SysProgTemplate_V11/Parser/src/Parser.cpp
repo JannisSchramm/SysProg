@@ -79,8 +79,8 @@ Node* Parser::decls() {
 		Node* nodeDecl = decl();
 		nodeDecls->addNode((SuperTree*)nodeDecl);
 		if(currentToken->getName() == SemicolonToken){
-			// getKey ist 0
-			Leaf* leafSemicolon = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+
+			Leaf* leafSemicolon = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 			nodeDecls->addLeaf((SuperTree*)leafSemicolon);
 			currentToken = scanner->getNextToken();
 			Node* nodeDecls2 = decls();
@@ -106,7 +106,7 @@ Node* Parser::decl() {
 	Node* node = new Node(DECL, currentToken->getLine(), currentToken->getColumn());
 
 	if (currentToken->getName() == IdentifierToken && compare(currentToken->getContent(), "int\0")) {
-		Leaf* leafInt = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+		Leaf* leafInt = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		leafInt->setValue(currentToken->getContent());
 		node->addLeaf((SuperTree*)leafInt);
 		currentToken = scanner->getNextToken();
@@ -114,7 +114,7 @@ Node* Parser::decl() {
 
 		node->addNode((SuperTree*)nodeArray);
 		if(currentToken->getName() == IdentifierToken){
-			Leaf* leafIdentifier = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+			Leaf* leafIdentifier = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 			// ist es ein Array?
 			if(nodeArray->hasLeave()){
 
@@ -151,11 +151,11 @@ Node* Parser::array() {
 
 	if(currentToken->getName() == OpenSquareToken){
 
-		Leaf* leafOpenSquare = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+		Leaf* leafOpenSquare = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		nodeArray->addLeaf((SuperTree*)leafOpenSquare);
 		currentToken = scanner->getNextToken();
 		if(currentToken->getName() == IntegerToken){
-			Leaf* leafInteger = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+			Leaf* leafInteger = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 			leafInteger->setValue(currentToken->getContent());
 //			printf("hier ist der Content: \n");
 //			printf(currentToken->getContent());
@@ -163,7 +163,7 @@ Node* Parser::array() {
 			nodeArray->addLeaf((SuperTree*)leafInteger);
 			currentToken = scanner->getNextToken();
 			if(currentToken->getName() == CloseSquareToken){
-				Leaf* leafCloseSquare = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+				Leaf* leafCloseSquare = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 				nodeArray->addLeaf((SuperTree*)leafCloseSquare);
 				currentToken = scanner->getNextToken();
 			}else{
@@ -204,7 +204,7 @@ Node* Parser::statements() { //TODO verschachtelte if funktionieren nicht
 
 		nodeStatements->addNode((SuperTree*)nodeStatement);
 		if(currentToken->getName() == SemicolonToken){
-			Leaf* leafSemicolon = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+			Leaf* leafSemicolon = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 			nodeStatements->addLeaf((SuperTree*)leafSemicolon);
 			currentToken = scanner->getNextToken();
 			Node* nodeStatements2 = statements();
@@ -222,17 +222,17 @@ Node* Parser::statement() {
 	printf("statement \n");
 	Node* nodeStatement = new Node(STATEMENT, currentToken->getLine(), currentToken->getColumn());
 	if (currentToken->getName() == IdentifierToken && (compare(currentToken->getContent(), "write\0"))) {
-		Leaf* leafWrite = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+		Leaf* leafWrite = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		nodeStatement->addLeaf((SuperTree*)leafWrite);
 		currentToken = scanner->getNextToken();
 		if (currentToken->getName() == OpenBracketToken) {
-			Leaf* leafOpenBracket = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+			Leaf* leafOpenBracket = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 			nodeStatement->addLeaf((SuperTree*)leafOpenBracket);
 			currentToken = scanner->getNextToken();
 			Node* nodeExp = exp();
 			nodeStatement->addNode((SuperTree*)nodeExp);
 			if (currentToken->getName() == CloseBracketToken) {
-				Leaf* leafCloseBracket = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+				Leaf* leafCloseBracket = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 				nodeStatement->addLeaf((SuperTree*)leafCloseBracket);
 				currentToken = scanner->getNextToken();
 			} else  {
@@ -242,21 +242,21 @@ Node* Parser::statement() {
 			error("in statement(): no OpenBracketToken \0", currentToken->getLine(), currentToken->getColumn());
 		}
 	} else if (currentToken->getName() == IdentifierToken && (compare(currentToken->getContent(), "read\0"))) {
-		Leaf* leafRead = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+		Leaf* leafRead = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		nodeStatement->addLeaf((SuperTree*)leafRead);
 		currentToken = scanner->getNextToken();
 		if (currentToken->getName() == OpenBracketToken) {
-			Leaf* leafOpenBracket = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+			Leaf* leafOpenBracket = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 			nodeStatement->addLeaf((SuperTree*)leafOpenBracket);
 			currentToken = scanner->getNextToken();
 			if(currentToken->getName() == IdentifierToken /*&& compare(currentToken->getContent(), "Identifier\0")*/){
-				Leaf* leafIdentifier = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+				Leaf* leafIdentifier = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 				nodeStatement->addLeaf((SuperTree*)leafIdentifier);
 				currentToken = scanner->getNextToken();
 				Node* nodeIndex = index();
 				nodeStatement->addNode((SuperTree*)nodeIndex);
 				if (currentToken->getName() == CloseBracketToken) {
-					Leaf* leafCloseBracket = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+					Leaf* leafCloseBracket = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 					nodeStatement->addLeaf((SuperTree*)leafCloseBracket);
 					currentToken = scanner->getNextToken();
 				} else {
@@ -270,7 +270,7 @@ Node* Parser::statement() {
 		}
 	} else if (currentToken->getName() == OpenCurlyToken) {
 		//printf("Open Curly\n");
-		Leaf* leafOpenCurly = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+		Leaf* leafOpenCurly = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		nodeStatement->addLeaf((SuperTree*)leafOpenCurly);
 		currentToken = scanner->getNextToken();
 		//printf(currentToken->getContent());		//Ausgabe: } und das ist richtig so
@@ -279,7 +279,7 @@ Node* Parser::statement() {
 		nodeStatement->addNode(nodeStatements);
 		if (currentToken->getName() == CloseCurlyToken) {
 			//printf("Hier sollten wir sein\n");
-			Leaf* leafCloseCurly = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+			Leaf* leafCloseCurly = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 			nodeStatement->addLeaf((SuperTree*)leafCloseCurly);
 			//printf("Token vor nextToken:\n");
 			//printf(currentToken->getContent());
@@ -293,23 +293,27 @@ Node* Parser::statement() {
 			error("in statement(): no CloseCurlyToken or OpenCurlyToken \0", currentToken->getLine(), currentToken->getColumn());
 		}
 	} else if (currentToken->getName() == IdentifierToken && (compare(currentToken->getContent(), "if\0") || compare(currentToken->getContent(), "IF\0"))) {
-		Leaf* leafIf = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+		Leaf* leafIf = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		nodeStatement->addLeaf((SuperTree*)leafIf);
 		currentToken = scanner->getNextToken();
 		if (currentToken->getName() == OpenBracketToken) {
-			Leaf* leafOpenBracket = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+			Leaf* leafOpenBracket = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 			nodeStatement->addLeaf((SuperTree*)leafOpenBracket);
 			currentToken = scanner->getNextToken();
 			Node* nodeExp = exp();
 			nodeStatement->addNode(nodeExp);
 			if (currentToken->getName() == CloseBracketToken) {
-				Leaf* leafCloseBracket = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+				Leaf* leafCloseBracket = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 				nodeStatement->addLeaf((SuperTree*)leafCloseBracket);
 				currentToken = scanner->getNextToken();
 				Node* nodeStatement2 = statement();
+
+				printf("<<<<<<<<<<<<<<< in statement if: %s \n", currentToken->getContent());
+
 				nodeStatement->addNode(nodeStatement2);
+
 				if (currentToken->getName() == IdentifierToken && (compare(currentToken->getContent(), "else\0") || compare(currentToken->getContent(), "ELSE\0"))) {
-					Leaf* leafElse = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+					Leaf* leafElse = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 					nodeStatement->addLeaf((SuperTree*)leafElse);
 					currentToken = scanner->getNextToken();
 					Node* nodeStatement3 = statement();
@@ -325,17 +329,17 @@ Node* Parser::statement() {
 			error("in statement(): no OpenBracketToken \0", currentToken->getLine(), currentToken->getColumn());
 		}
 	} else if (currentToken->getName() == IdentifierToken && (compare(currentToken->getContent(), "while\0")|| (compare(currentToken->getContent(), "WHILE\0")))) {
-		Leaf* leafWhile = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+		Leaf* leafWhile = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		nodeStatement->addLeaf((SuperTree*)leafWhile);
 		currentToken = scanner->getNextToken();
 		if (currentToken->getName() == OpenBracketToken) {
-			Leaf* leafOpenBracket = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+			Leaf* leafOpenBracket = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 			nodeStatement->addLeaf((SuperTree*)leafOpenBracket);
 			currentToken = scanner->getNextToken();
 			Node* nodeExp = exp();
 			nodeStatement->addNode((SuperTree*)nodeExp);
 			if (currentToken->getName() == CloseBracketToken) {
-				Leaf* leafCloseBracket = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+				Leaf* leafCloseBracket = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 				nodeStatement->addLeaf((SuperTree*)leafCloseBracket);
 				currentToken = scanner->getNextToken();
 				Node* nodeStatement2 = statement();
@@ -347,13 +351,13 @@ Node* Parser::statement() {
 			error("in statement(): no OpenBracketToken \0", currentToken->getLine(), currentToken->getColumn());
 		}
 	} else if (currentToken->getName() == IdentifierToken) {
-		Leaf* leafIdentifier = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+		Leaf* leafIdentifier = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		nodeStatement->addLeaf((SuperTree*)leafIdentifier);
 		currentToken = scanner->getNextToken();
 		Node* nodeIndex = index();
 		nodeStatement->addNode((SuperTree*)nodeIndex);
 		if (currentToken->getName() == DoubleEqualsToken) {
-			Leaf* leafDoubleEquals = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+			Leaf* leafDoubleEquals = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 			nodeStatement->addLeaf((SuperTree*)leafDoubleEquals);
 			currentToken = scanner->getNextToken();
 			Node* nodeExp = exp();
@@ -394,38 +398,38 @@ Node* Parser::exp2() {
 	printf("exp2 \n");
 	Node* node = new Node(EXP2, currentToken->getLine(), currentToken->getColumn());
 	if (currentToken->getName() == OpenBracketToken) {
-		Leaf* leafOpenB = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+		Leaf* leafOpenB = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		node->addLeaf((SuperTree*)leafOpenB);
 		currentToken = scanner->getNextToken();
 		Node* nodeExp = exp();
 		node->addNode((SuperTree*)nodeExp);
 		if (currentToken->getName() == CloseBracketToken) {
-			Leaf* leafCloseB = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+			Leaf* leafCloseB = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 			node->addLeaf((SuperTree*)leafCloseB);
 			currentToken = scanner->getNextToken();
 		} else {
 			error("in exp2(): no CloseBracketToken \0", currentToken->getLine(), currentToken->getColumn());
 		}
 	} else if (currentToken->getName() == IdentifierToken /*&& compare(currentToken->getContent(), "Identifier\0")*/) {
-		Leaf* leafIdentifier = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+		Leaf* leafIdentifier = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		node->addLeaf((SuperTree*)leafIdentifier);
 		currentToken = scanner->getNextToken();
 		Node* nodeIndex = index();
 		node->addNode((SuperTree*)nodeIndex);
 	} else if (currentToken->getName() == IntegerToken) {
-		Leaf* leafInteger = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+		Leaf* leafInteger = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		leafInteger->setValue(currentToken->getContent());
 		node->addLeaf((SuperTree*)leafInteger);
 		currentToken = scanner->getNextToken();
 	} else if (currentToken->getName() == MinusToken) {
-		Leaf* leafMinus = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+		Leaf* leafMinus = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		node->addLeaf((SuperTree*)leafMinus);
 		currentToken = scanner->getNextToken();
 		Node* nodeExp2 = exp2();
 		node->addNode((SuperTree*)nodeExp2);
 	} else if (currentToken->getName() == ExclamationToken) {
 		printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< exp2!!!!!!!!!!!!!!!!!! \n");
-		Leaf* leafExclamation = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+		Leaf* leafExclamation = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		node->addLeaf((SuperTree*)leafExclamation);
 		currentToken = scanner->getNextToken();
 		Node* nodeExp2 = exp2();
@@ -442,13 +446,13 @@ Node* Parser::index() {
 	Node* node = new Node(INDEX, currentToken->getLine(), currentToken->getColumn());
 
 	if (currentToken->getName() == OpenSquareToken) {
-		Leaf* leafOpenS = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+		Leaf* leafOpenS = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		node->addLeaf((SuperTree*)leafOpenS);
 		currentToken = scanner->getNextToken();
 		Node* nodeExp = exp();
 		node->addNode((SuperTree*)nodeExp);
 		if (currentToken->getName() == CloseSquareToken) {
-			Leaf* leafCloseS = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+			Leaf* leafCloseS = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 			node->addLeaf((SuperTree*)leafCloseS);
 			currentToken = scanner->getNextToken();
 		} else {
@@ -458,7 +462,8 @@ Node* Parser::index() {
 			|| currentToken->getName() == DivideToken || currentToken->getName() == SmallToken || currentToken->getName() == BigToken
 			|| currentToken->getName() == EqualsToken || currentToken->getName() == SmallerDoubleBiggerToken || currentToken->getName() == EndToken
 			|| currentToken->getName() == AndToken || currentToken->getName() == DoubleEqualsToken || currentToken->getName() == CloseBracketToken
-			|| currentToken->getName() == SemicolonToken) {
+			|| currentToken->getName() == SemicolonToken || currentToken->getName() == CloseSquareToken
+			|| (currentToken->getName() == IdentifierToken && (compare(currentToken->getContent(), "else\0")))) {
 
 
 	} else {
@@ -472,7 +477,7 @@ Node* Parser::op_exp(){
 	printf("op_exp \n");
 	Node* node = new Node(OP_EXP, currentToken->getLine(), currentToken->getColumn());
 	if (currentToken->getName() == CloseBracketToken || currentToken->getName() == CloseSquareToken || currentToken->getName() == SemicolonToken
-			) {
+			|| (currentToken->getName() == IdentifierToken && (compare(currentToken->getContent(), "else\0")))	) {
 
 	} else if (currentToken->getName() == PlusToken || currentToken->getName() == MinusToken || currentToken->getName() == MultiplyToken
 			|| currentToken->getName() == DivideToken || currentToken->getName() == SmallToken || currentToken->getName() == BigToken
@@ -493,47 +498,47 @@ Node* Parser::op(){
 	printf("op \n");
 	Node* node = new Node(OP, currentToken->getLine(), currentToken->getColumn());
 	if (currentToken->getName() == PlusToken) {
-		Leaf* leafPlus = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+		Leaf* leafPlus = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		node->addLeaf((SuperTree*)leafPlus);
 		currentToken = scanner->getNextToken();
 	}
 	else if (currentToken->getName() == MinusToken) {
-		Leaf* leafMinus = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+		Leaf* leafMinus = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		node->addLeaf((SuperTree*)leafMinus);
 		currentToken = scanner->getNextToken();
 	}
 	else if (currentToken->getName() == MultiplyToken) {
-		Leaf* leafMultiply = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+		Leaf* leafMultiply = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		node->addLeaf((SuperTree*)leafMultiply);
 		currentToken = scanner->getNextToken();
 	}
 	else  if (currentToken->getName() == DivideToken) {
-		Leaf* leafDivide = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+		Leaf* leafDivide = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		node->addLeaf((SuperTree*)leafDivide);
 		currentToken = scanner->getNextToken();
 	}
 	else if (currentToken->getName() == SmallToken) {
-		Leaf* leafSmall = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+		Leaf* leafSmall = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		node->addLeaf((SuperTree*)leafSmall);
 		currentToken = scanner->getNextToken();
 	}
 	else if (currentToken->getName() == BigToken) {
-		Leaf* leafBig = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+		Leaf* leafBig = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		node->addLeaf((SuperTree*)leafBig);
 		currentToken = scanner->getNextToken();
 	}
 	else if (currentToken->getName() == EqualsToken) {
-		Leaf* leafEquals = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+		Leaf* leafEquals = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		node->addLeaf((SuperTree*)leafEquals);
 		currentToken = scanner->getNextToken();
 	}
 	else if (currentToken->getName() == SmallerDoubleBiggerToken) {
-		Leaf* leafSmaller = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+		Leaf* leafSmaller = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		node->addLeaf((SuperTree*)leafSmaller);
 		currentToken = scanner->getNextToken();
 	}
 	else if (currentToken->getName() == AndToken) {
-		Leaf* leafAnd = new Leaf(currentToken->getKey(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
+		Leaf* leafAnd = new Leaf(currentToken->getKeyIndex(), currentToken->getKeyOffset(), symTab, LEAF, currentToken->getLine(), currentToken->getColumn());
 		node->addLeaf((SuperTree*)leafAnd);
 		currentToken = scanner->getNextToken();
 	} else {
@@ -596,6 +601,10 @@ void Parser::typeCheckDecl(Node* nodeDecl) {
 	if(listSize == 3) {
 		if(list->getSuperTree(0)->gt == LEAF && list->getSuperTree(1)->gt == ARRAY && list->getSuperTree(2)->gt == LEAF) {
 			typeCheckArray((Node*)list->getSuperTree(1));
+
+			printf("<<<<<<<<<<<<<<<< in typeCheckDecl  %d \n", ((Leaf*)list->getSuperTree(2))->getLine());
+
+
 			if(((Leaf*)list->getSuperTree(2))->getType() != noType) {
 					error("in typeCheckDecl(): identifier already defined \0", list->getSuperTree(2)->getLine(), list->getSuperTree(2)->getColumn() ); //identifier already defined
 					nodeDecl->store(errorType);

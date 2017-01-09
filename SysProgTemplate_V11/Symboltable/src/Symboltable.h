@@ -17,7 +17,7 @@ public:
 	Symboltable();
 	virtual ~Symboltable();
 	int* insert(char* lexem);
-	Information* lookup(int* key);
+	Information* lookup(int symboltabelleIndex, int symboltabelleOffset);
 	int* insert(char* lexem, char* typ);
 private:
 	int length;

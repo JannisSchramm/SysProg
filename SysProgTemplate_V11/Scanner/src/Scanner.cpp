@@ -77,7 +77,7 @@ Tokentyp Scanner::calculateTokentyp() {
 		nextChar = buffer->getNextChar();
 		numberCharacters++;
 		if(nextChar == NULL){
-			printf("<<<<<<<<<<<<<<<<<<< Ende \n");
+			printf("<<<<<<<<<<<<<<<< in Scanner kam der EndToken an \n");
 			return EndToken;
 		}
 		temporaryChars[position] = nextChar;
@@ -126,10 +126,11 @@ Tokentyp Scanner::calculateTokentyp() {
 // ### Name geändert createToken -> createToken
 Token* Scanner::createToken(Tokentyp state, int line, int column) {
 	Token* token;
+	int keyIndex = 0;
+	int keyOffset = 0;
 	int* key;
 	if (state == IdentifierToken) {
 		key = symboltable->insert(temporaryChars);
-		printf("<<<<<<<<<<<<<<<<<<<< identifier ist: %s \n", temporaryChars);
 	}
 	else if (state == PlusToken) {
 		key = symboltable->insert("+\0", "+\0");
@@ -164,13 +165,19 @@ Token* Scanner::createToken(Tokentyp state, int line, int column) {
 	else {
 		key = 0;
 	}
+
+	if (key > 0) {
+		keyIndex = *key;
+		keyOffset = *(key+1);
+	}
+
 	/** 19.3.15
 	if (state == IntegerToken){
 		int x = atoi(temporaryChars);
 	}
 	**/
 	token = new Token(state, temporaryChars, line, column);
-	token->setKey(key);
+	token->setKey(keyIndex, keyOffset);
 	resetTemporaryChars();
 	return token;
 }

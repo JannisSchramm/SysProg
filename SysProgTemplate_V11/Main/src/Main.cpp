@@ -33,8 +33,8 @@ void ausgabe(char* token, int line, int column,  char* lexem, FILE* fp) {
 
 int main(int argc, char* argv[]) {
 
-	argv[1] = "/home/rebecca/HS/SysProg/Test.txt";
-	argv[2] = "/home/rebecca/HS/SysProg/TestOut.txt";
+	argv[1] = "/home/rebecca/Dokumente/Studium/SysProg/SysProg/Test.txt";
+	argv[2] = "/home/rebecca/Dokumente/Studium/SysProg/SysProg/TestOut.txt";
 	argc = 2;
 
 	printf("%d %s \n", argc, argv[1]);
@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
 		tokentyp = token->getName();
 		switch(tokentyp) {
 			case(IdentifierToken) : {
-				long long key = token->getKey();
+				int* key = token->getKey();
 				Information* info =  symboltable->lookup(key);
 				tokenName = info->getType();
 			}
