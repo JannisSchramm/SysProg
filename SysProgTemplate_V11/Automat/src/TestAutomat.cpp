@@ -1,6 +1,9 @@
 #include "Automat.h"
 #include <stdio.h>
 
+/*
+* Main Methode
+*/
 int main (int argc, char* argv[]){
 	printf("Test\n");
 	Automat* automat;
